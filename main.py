@@ -1,12 +1,19 @@
-from requests import get
-from bs4 import BeautifulSoup
+from extractors.indeed import extract_indeed_jobs
 from extractors.wwr import extract_wwr_jobs
 
-base_url = "https://www.indeed.com/jobs?q="
-search_term = "python"
+keyword = input("What do you want to search for?")
 
-response = get(f"{base_url}{search_term}")
-if response.status_code != 200:
-    print("Can't request page")
-else:
-    soup = BeautifulSoup(response.text, "html.parser")
+
+# wwr = extract_wwr_jobs(keyword)
+indeed = extract_indeed_jobs(keyword)
+
+jobs = indeed
+
+
+file = open(f"{keyword}.csv", "w")
+file.write("Position, Company, Location, URL\n")
+for job in jobs:
+    file.write(
+        f"{job['position']},{job['company']},{job['location']},{job['link']}\n")
+
+file.close()
